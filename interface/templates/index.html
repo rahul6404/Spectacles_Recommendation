@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Face Capture</title>
+    <script>
+        function checkImageStatus() {
+            fetch('/image_status')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.image_captured) {
+                        document.getElementById('status').innerText = 'Image captured. Would you like to accept or recapture?';
+                        document.getElementById('capture_button').style.display = 'none';
+                        document.getElementById('accept_button').style.display = 'inline';
+                        document.getElementById('recapture_button').style.display = 'inline';
+                        document.getElementById('captured_image').style.display = 'block';
+                        document.getElementById('captured_image').src = '/image'; // Update image source
+                    } else {
+                        document.getElementById('status').innerText = 'Capturing image...';
+                        document.getElementById('captured_image').style.display = 'none';
+                    }
+                });
+        }
+
+        function captureImage() {
+            fetch('/capture_image', { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        checkImageStatus(); // Check status after capturing
+                    } else {
+                        alert(data.message);
+                    }
+                });
+        }
+
+        window.onload = function() {
+            setInterval(checkImageStatus, 3000); // Poll every 3 seconds
+        };
+    </script>
+</head>
+<body>
+    <h1>Face Capture</h1>
+    <div id="status">Capturing image...</div>
+    <button id="capture_button" onclick="captureImage()">Capture Image</button>
+    <a id="accept_button" href="/accept" style="display:none;">Accept</a>
+    <a id="recapture_button" href="/recapture" style="display:none;">Recapture</a>
+    <img src="{{ url_for('video_feed') }}" style="width: 640px; height: 480px;" />
+    <img src="#" id="captured_image" style="display:none; width: 640px; height: 480px;" alt="Captured Image" />
+</body>
+</html>

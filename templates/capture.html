@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Capture Result</title>
+</head>
+<body>
+    <h1>Captured Image</h1>
+    <img src="{{ image_url }}" style="width: 720px;"/>
+    <form method="POST" action="{{ url_for('capture') }}">
+        <button name="action" type="submit" value="OK">OK</button>
+        <button name="action" type="submit" value="RETAKE">RETAKE</button>
+    </form>
+</body>
+</html>
